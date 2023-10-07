@@ -12,11 +12,9 @@ def somme(p, n):
     return s
 
 
-l = [10, 50, 100, 500, 5000, 50000, 500000]
-
 p = int(input("Donner l'entier naturel p : "))
 
-for n in l:
+for n in (10, 50, 100, 500, 5000, 50000, 500000):
     print('Pour p =', p, 'et n=', n, ': S_p(n) = ', somme(p, n))
 
-# Lorsque n tend vers l'infini, le résultat tend vers une valeur finie
+# Conjecture : Lorsque n tend vers l'infini, le résultat tend vers une valeur finie
