@@ -73,8 +73,8 @@ fichier.close()
 print('Nombre de mots :', nbmots(l))
 
 # Affichage de la liste des mots les plus longs
-print('Mots les plus longs ', pluslongmot(l))
+print('Mots les plus longs', pluslongmot(l))
 
 # Afichage de la liste des mots contenant la chaine saisie
-ch = input('Quelle chaîne voulez-vous chercher ?')
+ch = input('Quelle chaîne voulez-vous chercher ? ')
 print(isinliste(l, ch))
