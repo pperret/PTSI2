@@ -11,25 +11,51 @@ plt.close('all')
 # =============================================================================
 # Données
 # =============================================================================
-u0 = 0  # V
-E = 10  # V
-R = 1000  # ohm
-C = 1E-9  # F
+u0 = 0  # Tension initiale pour le condensateur (V)
+E = 10  # Tension du générateur (V)
+R = 1000  # Valeur de la résistance (ohm)
+C = 1E-9  # Valeur de la capacité (F)
 
 # =============================================================================
 # Grandeurs calculées
 # =============================================================================
-tau = R*C  # s
-tf = 5*tau  # s
-dt = tau/10  # s
-N = int(tf/dt)  # N doit être un nombre entier
+tau = R*C  # Constante de temps (s)
+tf = 5*tau  # Durée du graphe (s)
+dt = tau/10  # Pas de temps (s)
+N = int(tf/dt)  # Nombre de points sur le graphe (N doit être un nombre entier)
+
 # =============================================================================
 # Fonctions
 # =============================================================================
 
 
 def F(u, E, tau):
+    '''Calcul de la dérivée de la tension pour la date courante
+    Paramètres: Tension pour la date courante u
+    Tension du générateur
+    Constante de temps tau
+    Résultat: Dérivée de la tension à la date courante'''
     return (E-u)/tau
+
+
+def tension(u, E, tau, dt):
+    '''Calcul de la tension pour la date suivante en fonction de celle pour la date courante
+     Paramètres: Tension pour la date courante u
+     Tension du générateur E
+     Constante de temps tau
+     Pas de temps dt
+     Résultat: Tension à la date suivante'''
+    return u + F(u, E, tau)*dt
+
+
+def tension_analytique(t, E, u0, tau):
+    ''' Calcul en mode analytique des tensions pour un tableau numpy de dates
+     Paramètres: Tableau numpy des dates t
+     Tension du générateur E
+     Tension initiale du condensateur u0
+     Constante de temps tau
+     Résultat: Tableau numpy des tensions calculées'''
+    return (u0 - E) * np.exp(-1 * t/tau) + E
 
 
 # =============================================================================
@@ -37,17 +63,18 @@ def F(u, E, tau):
 # =============================================================================
 # Boucle sur les différentes valeurs de dt
 for dt1 in [tau/10, tau/5, tau/2]:
-    # Nombre d'itérations pour une durée de 5 secondes en fonction de dt (N doit être un nombre entier)
+    # Nombre d'itérations en fonction de dt (N doit être un nombre entier)
     N1 = int(tf/dt1)
     u = [u0]  # liste des tensions calculées
     t = [0]  # liste des des dates considérées
-    # Itérations pour chacune des dates (pas de dt)
-    for i in range(0, N):
-        t1 = t[-1]+dt1  # Calcul de la date
-        u1 = u[-1] + F(u[-1], E, tau) * dt1  # Calcul de la tension pour la date
-        # Ajout de la date et de la tension calculées aux tableaux résultants
-        u.append(u1)
-        t.append(t1)
+
+    # Itérations pour chacune des N dates (avec un pas de dt)
+    for i in range(1, N1+1):
+        # Calcul de la date courante et ajout à la liste
+        t.append(i*dt1)
+        # Calcul de la tension pour la date courante en fonction de la précédente et ajout à la liste
+        u.append(tension(u[-1], E, tau, dt1))
+
     # Affiche de la courbe pour la valeur de dt considérée
     plt.plot(t, u, label='Euler pour '+str(round(dt*1e6, 2))+' μs')
 
@@ -59,7 +86,7 @@ for dt1 in [tau/10, tau/5, tau/2]:
 t = np.linspace(0, tf, N)
 
 # Calcul du tableau des tensions en utilisant les calculs sur les tableaux numpy
-u = (u0 - E) * np.exp(-1 * t/tau) + E
+u = tension_analytique(t, E, u0, tau)
 
 # Affichage du résultat
 plt.plot(t, u, label='Courbe analytique')
