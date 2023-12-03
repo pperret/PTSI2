@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Exercice 3 du TD4
 """
