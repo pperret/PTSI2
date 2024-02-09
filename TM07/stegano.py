@@ -27,7 +27,8 @@ tab2 = np.zeros((lig, col, cou), dtype='uint8')
 #            tab2[i][j][k] = (tab[i][j][k] %16) * 16
 
 # Version en utilisant les fonctionalités numpy
-tab2 = (tab % 16)*16
+# tab2 = (tab%16)*16
+tab2 = tab << 4
 
 # Sauvegarde de l'image (dans un autre fichier)
 plt.imsave('ptsi2_res.bmp', tab2)
